@@ -20,16 +20,16 @@ import javafx.stage.Stage;
 
 public class SimpleFX extends Application {
 
-    private Button btnExit =new Button("退出");
+    private Button btnExit = new Button("退出");
     private Button btnSend = new Button("发送");
-    private Button btnOpen  = new Button("加载");
-    private Button btnSave =new Button("保存");
+    private Button btnOpen = new Button("加载");
+    private Button btnSave = new Button("保存");
 
     private TextField tfSend = new TextField();
     private TextArea taDisplay = new TextArea();
-    public static void main(String[] args) {
-        launch(args);
-    }
+//    public static void main(String[] args) {
+//        launch(args);
+//    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -38,14 +38,19 @@ public class SimpleFX extends Application {
         vBox.setSpacing(10);//各控件之间的间隔
         //VBox面板中的内容距离四周的留空区域
         vBox.setPadding(new Insets(10,20,10,20));
-        vBox.getChildren().addAll(new Label("信息显示区："),
-                taDisplay,new Label("信息输入区："), tfSend);
+        // 设置发送信息的文本框
+        // 自动换行
+        taDisplay.setWrapText(true);
+        // 显示信息框只读:
+        taDisplay.setEditable(false);
+
+        vBox.getChildren().addAll(new Label("信息显示区："), taDisplay,new Label("信息输入区："), tfSend);
 
         VBox.setVgrow(taDisplay, Priority.ALWAYS);
         mainPane.setCenter(vBox);
         //底部按钮区域
-        HBox hBox = new HBox();
-        hBox.setSpacing(10);
+        HBox hBox = new HBox();  // 水平Box
+        hBox.setSpacing(10);    // 宽度10
         hBox.setPadding(new Insets(10,20,10,20));
         hBox.setAlignment(Pos.CENTER_RIGHT);
         hBox.getChildren().addAll(btnSend,btnSave,btnOpen,btnExit);
@@ -60,23 +65,18 @@ public class SimpleFX extends Application {
             taDisplay.appendText(msg+'\n');
             tfSend.clear();
         });
-        tfSend.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
+        tfSend.setOnKeyPressed(event -> {
 //                if (event.getCode() == KeyCode.SHIFT,KeyCode.ENTER){
 
 //                }
-                if (event.getCode()== KeyCode.ENTER)
-                {
-                    String msg = tfSend.getText();
-                    if (event.isShiftDown()) {
-                        taDisplay.appendText("echo:"+msg+'\n');
-                    }
-                    else {
-                        taDisplay.appendText(msg + '\n');
-                    }
-                    tfSend.clear();
+            if (event.getCode() == KeyCode.ENTER) {
+                String msg = tfSend.getText();
+                if (event.isShiftDown()) {
+                    taDisplay.appendText("echo:" + msg + '\n');
+                } else {
+                    taDisplay.appendText(msg + '\n');
                 }
+                tfSend.clear();
             }
         });
     }
