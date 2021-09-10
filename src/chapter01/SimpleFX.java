@@ -72,6 +72,9 @@ public class SimpleFX extends Application {
                     if (event.isShiftDown()) {
                         taDisplay.appendText("echo:"+msg+'\n');
                     }
+//                    else if (event.isControlDown()){  //todo control+enter tfSend area 换行
+//                        tfSend.
+//                    }
                     else {
                         taDisplay.appendText(msg + '\n');
                     }
