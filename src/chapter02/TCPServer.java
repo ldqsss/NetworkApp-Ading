@@ -11,10 +11,10 @@ import java.net.Socket;
 
 public class TCPServer {
     private int port = 8008;
-    private ServerSocket serverSocket;
+    private ServerSocket serverSocket;   // define 变量: java.net.ServerSocket
 
     public TCPServer() throws IOException{
-        serverSocket = new ServerSocket(port);
+        serverSocket = new ServerSocket(port); // 创建serverSocket对象, using port 8008
         System.out.println("Server started, Listening to "+port+" port");
     }
 
