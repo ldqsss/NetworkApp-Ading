@@ -5,7 +5,6 @@ package chapter04.client;/*
  * @Homework_des:
  */
 
-import chapter03.FileDialogClient;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
