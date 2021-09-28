@@ -1,4 +1,4 @@
-package chapter02;/*
+package chapter03;/*
  * @project: NetworkApp-Ading
  * @Created-Time: 2021/9/14 15:13
  * @Author: 刘鼎谦-Ading
@@ -65,7 +65,7 @@ public class TCPServer {
                     msg = msg.replaceAll("我", "You");
                     msg = msg.replaceAll("你","I");
                     pw.println("From Server:" + msg);
-
+                    pw.println("来自服务器，重复发送: " + msg);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
