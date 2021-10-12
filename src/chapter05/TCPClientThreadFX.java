@@ -1,10 +1,11 @@
-package chapter03;/*
+package chapter05;/*
  * @project: NetworkApp-Ading
  * @Created-Time: 2021/9/14 15:38
  * @Author: 刘鼎谦-Ading
  * @Homework_des:
  */
 
+import chapter03.TCPClient;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -29,7 +30,7 @@ public class TCPClientThreadFX extends Application {
     private TextArea taDisplay = new TextArea();
 
     private TextField tfIP = new TextField("202.116.195.71");
-    private TextField tfPort = new TextField("9009");
+    private TextField tfPort = new TextField();
     private Button btnConnect = new Button("连接");
 
     private TCPClient tcpClient;
