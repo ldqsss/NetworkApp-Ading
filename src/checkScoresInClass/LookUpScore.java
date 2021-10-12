@@ -1,4 +1,4 @@
-package lookupscore;/*
+package checkScoresInClass;/*
  * @project: NetworkApp-Ading
  * @Created-Time: 2021/9/28 15:31
  * @Author: 刘鼎谦-Ading
