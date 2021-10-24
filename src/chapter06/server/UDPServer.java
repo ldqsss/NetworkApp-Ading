@@ -18,6 +18,8 @@ import java.util.Date;
 public class UDPServer {
     private int serverPort;
     private DatagramSocket serverSocket;//UDP套接字
+    public InetAddress remoteIP;
+    public int remotePort;
 
 
     //用于接收数据的报文字节数组缓存最大容量，字节为单位
@@ -49,6 +51,10 @@ public class UDPServer {
 
     //定义数据接收方法
     public String receive() {
+        /*
+        * 与TCP不同，小负荷的UDP服务器往往不是多线程的。
+        * 由于UDP是同一个套接字对应多个客户端，对于UDP服务端，可以不需要采用多线程方式
+        * */
         String msg;
         //先准备一个空数据报文
         DatagramPacket inPacket = new DatagramPacket(
@@ -57,8 +63,8 @@ public class UDPServer {
             //读取报文，阻塞语句，有数据就装包在inPacket报文中，装完或装满为止。
             serverSocket.receive(inPacket);
             //将接收到的字节数组转为对应的字符串
-            InetAddress remoteIP =  inPacket.getAddress();
-            int remotePort = inPacket.getPort();
+            remoteIP =  inPacket.getAddress();
+            remotePort = inPacket.getPort();
 
             msg = new String(inPacket.getData(),
                     0, inPacket.getLength(), "utf-8");
@@ -69,12 +75,10 @@ public class UDPServer {
         return msg;
     }
     public void service(){
-        DatagramPacket inPacket = new DatagramPacket(
-                new byte[MAX_PACKET_SIZE], MAX_PACKET_SIZE);
         while (true) { //等待客户端
-            receive(); //阻塞等待,来了哪个客户就服务哪个客服  ……处理请求，发回响应…… }
-            String msg = "20191002883&刘鼎谦&"+new Date().toString()+ "&"+inPacket.toString();
-            send(msg);
+            String mm = receive(); //阻塞等待,来了哪个客户就服务哪个客服  ……处理请求，发回响应…… }
+            String msg = "20191002883&刘鼎谦&"+new Date().toString()+ "&"+mm;
+            send(msg,remoteIP,remotePort);
         }
     }
 
