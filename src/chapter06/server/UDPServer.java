@@ -16,7 +16,6 @@ import java.util.Date;
 
 
 public class UDPServer {
-    private int serverPort;
     private DatagramSocket serverSocket;//UDP套接字
     public InetAddress remoteIP;
     public int remotePort;

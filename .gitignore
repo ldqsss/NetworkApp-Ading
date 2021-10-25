@@ -2,3 +2,4 @@ out
 .idea
 test.java
 *.txt
+/src/chapter07/BASE64.java
