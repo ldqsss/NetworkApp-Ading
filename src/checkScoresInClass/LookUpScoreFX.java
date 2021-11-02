@@ -80,7 +80,7 @@ public class LookUpScoreFX extends Application {
                 // 启用发送按钮
                 btnSend.setDisable(false);
                 // 停用连接按钮
-                btnConnect.setDisable(true);
+//                btnConnect.setDisable(true);
                 // 启用接收信息进程
                 readThread = new Thread(()->{
                     String msg = null;
