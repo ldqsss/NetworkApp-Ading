@@ -1,23 +1,24 @@
-package chapter08;/*
-* @project: NetworkApp-Ading
-* @Created-Time: 2021-10-31 10:58
-* @Author: 刘鼎谦-Ading
-* @file_desc:
-*/
+package chapter08.http;/*
+ * @project: NetworkApp-Ading
+ * @Created-Time: 2021/9/14 15:30
+ * @Author: 刘鼎谦-Ading
+ * @Homework_des:
+ */
 
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
+import java.net.Socket;
 
-public class HTTPSClient {
-    private SSLSocket socket;
-    private SSLSocketFactory sslSocketFactory;
-    private PrintWriter pw;
-    private BufferedReader br;
+public class HTTPClient {
+    private Socket socket; // define socket
+    private PrintWriter pw; // define 字符流 out
+    private BufferedReader br; // define 字符流 in
 
-    public HTTPSClient(String ip, String port) throws IOException {
-        sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-        socket = (SSLSocket) sslSocketFactory.createSocket(ip,Integer.parseInt(port));
+    public HTTPClient(String ip, String port) throws IOException {
+        //主动向服务器发起连接，实现TCP的三次握手过程
+        //如果不成功，则抛出错误信息，其错误信息交由调用者处理
+        socket = new Socket(ip, Integer.parseInt(port));
+
+        //得到网络输出字节流地址，并封装成网络输出字符流
         OutputStream socketOut = socket.getOutputStream();
         pw = new PrintWriter( // 设置最后一个参数为true，表示自动flush数据
                 new OutputStreamWriter(//设置utf-8编码
@@ -28,6 +29,7 @@ public class HTTPSClient {
         br = new BufferedReader(
                 new InputStreamReader(socketIn, "utf-8"));
     }
+
     public void send(String msg) {
         //输出字符流，由Socket调用系统底层函数，经网卡发送字节流
         pw.println(msg);
@@ -55,5 +57,14 @@ public class HTTPSClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //本机模块内测试与运行，需先运行TCPServer
+    public static void main(String[] args) throws IOException {
+        HTTPClient tcpClient = new HTTPClient("127.0.0.1", "8008");
+        tcpClient.send("hello？");//发送一串字符
+        tcpClient.send("886");//发送一串字符
+        //接收服务器返回的字符串并显示
+        System.out.println(tcpClient.receive());
     }
 }
