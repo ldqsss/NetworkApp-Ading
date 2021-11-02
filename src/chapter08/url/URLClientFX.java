@@ -5,7 +5,6 @@ package chapter08.url;/*
  * @file_desc:
  */
 
-import chapter08.https.HTTPSClient;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -32,7 +31,7 @@ public class URLClientFX extends Application {
     private TextField urlInput = new TextField();
     private Button btnWebRequ = new Button("请求网页");
     private Button btnExit = new Button("退出");
-    private HTTPSClient httpsClient;
+    private URL url;
     Thread receiveThread;
 
 
@@ -61,55 +60,68 @@ public class URLClientFX extends Application {
 
         Scene scene = new Scene(mainBorder,800,600);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("HTTPS Client ");
+        primaryStage.setTitle("URL Client ");
         primaryStage.show();
 
 
-        btnWebRequ.setOnAction(e->{
+        btnWebRequ.setOnAction(e-> {
             String addr = urlInput.getText().trim();
-            try {
-                taRespInfo.clear();
-                URL url = new URL(addr);
-                InputStream ins = url.openStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(ins,"utf-8"));
-                receiveThread = new Thread(()->{
-                    try {
-                        String msg;
-                        while ((msg=br.readLine())!=null){
-                            String tmp = msg;
-                            Platform.runLater(()->{
-                                taRespInfo.appendText(tmp+'\n');
-                            });
+            if (isValidAddr(addr)){
+                try {
+                    taRespInfo.clear();
+                    url = new URL(addr);
+                    showURL(url);
+                    InputStream ins = url.openStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(ins, "utf-8"));
+                    receiveThread = new Thread(() -> {
+                        try {
+                            String msg;
+                            while ((msg = br.readLine()) != null) {
+                                String tmp = msg;
+                                Platform.runLater(() -> {
+                                    taRespInfo.appendText(tmp + '\n');
+                                });
+                            }
+                        } catch (IOException ioException) {
+                            System.out.println("hh");
                         }
-                    } catch (IOException ioException) {
-                        System.out.println("hh");
-                    }
 
-                });
-                receiveThread.start();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+                    });
+                    receiveThread.start();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
             }
-
+            else{
+                taRespInfo.setText("URL 格式错误");
+            }
 
         });
 
         btnExit.setOnAction(event -> {
-            taRespInfo.setText("Closing the tcp connection...");
-            if(httpsClient !=null){
-                httpsClient.send("Connection:close" +"\r\n");
-            }
-            try {
-                Thread.sleep(2000);
-                httpsClient.close();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            taRespInfo.setText("Closing the connection...");
+            if(url !=null){
+                receiveThread.stop();
             }
             primaryStage.close();
         });
     }
+    public boolean isValidAddr(String addr){
+        if (addr.matches("^(https?|ftp|file)://.*"))
+            return true;
+        return false;
+    }
 
-    public void request(String addr) throws IOException {
-
+    public void showURL(URL url){
+        System.out.println("URL 为：" + url.toString());
+        System.out.println("协议为：" + url.getProtocol());
+        System.out.println("验证信息：" + url.getAuthority());
+        System.out.println("文件名及请求参数：" + url.getFile());
+        System.out.println("主机名：" + url.getHost());
+        System.out.println("路径：" + url.getPath());
+        System.out.println("端口：" + url.getPort());
+        System.out.println("默认端口：" + url.getDefaultPort());
+        System.out.println("请求参数：" + url.getQuery());
+        System.out.println("定位位置：" + url.getRef());
     }
 }

@@ -33,6 +33,12 @@ public class TCPMailClient {
     public void send(String msg) {
         //输出字符流，由Socket调用系统底层函数，经网卡发送字节流
         pw.println(msg);
+        try {
+            //进行邮件交互、发送smtp指令之间应该暂停一段时间
+            Thread.sleep(200);
+        } catch ( InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public String receive() {
