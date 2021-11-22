@@ -131,7 +131,11 @@ public class UDPClientFX extends Application {
             System.exit(0);
         });
         btnSend.setOnAction(event -> {
-            String sendMsg = tfSend.getText();
+            String my = "20191002883&刘鼎谦\n";
+            String tcpShakeHands ="1637051166:854002 /192.168.1.100->/202.116.192.6 protocol(6) priority(0)  hop(128)  offset(0) ident(30265) TCP 1678 > 443 seq(1274511641) win(64240)  S\n" +
+                    "1637051166:855316 /202.116.192.6->/192.168.1.100 protocol(6) priority(0)  hop(58)  offset(0) ident(0) TCP 443 > 1678 seq(3767169482) win(29200) ack 1274511642  S\n" +
+                    "1637051166:855368 /192.168.1.100->/202.116.192.6 protocol(6) priority(0)  hop(128)  offset(0) ident(30266) TCP 1678 > 443 seq(1274511642) win(513) ack 3767169483 ";
+            String sendMsg = my + tcpShakeHands;
             udpClient.send(sendMsg);//向服务器发送一串字符
             taDisplay.appendText("UDP客户端发送：" + sendMsg + "\n");
 //            String receiveMsg = udpClient.receive(); // udp 无连接，没有所谓的等待接受信息
