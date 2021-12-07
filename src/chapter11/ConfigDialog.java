@@ -1,24 +1,20 @@
-package chapter10;/*
+package chapter11;/*
  * @project: NetworkApp-Ading
- * @Created-Time: 2021/11/16 15:47
- * @Author: Ading
- * @file_des:
+ * @Created-Time: 2021-11-22 19:12
+ * @Author: 刘鼎谦-Ading
+ * @file_desc:
  */
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
-
 
 public class ConfigDialog {
     private JpcapCaptor jpcapCaptor;  //用于返回给主窗体
@@ -27,6 +23,13 @@ public class ConfigDialog {
     private Stage stage = new Stage();//对话框窗体
 
     //parentStage表示抓包主程序(PacketCaptureFX)的stage，传值可通过这种构造方法参数的方式
+    private String keyData= null;
+
+    public String getKeyData() {
+        return keyData;
+    }
+
+    private TextField tfKeywords = new TextField();
     public ConfigDialog(Stage parentStage) {
         //设置该对话框的父窗体为调用者的那个窗体
         stage.initOwner(parentStage);
@@ -81,8 +84,8 @@ public class ConfigDialog {
                 jpcapCaptor = JpcapCaptor.openDevice(networkInterface, snapLen,
                         promisc, 20);
                 jpcapCaptor.setFilter(tfFilter.getText().trim(), true);
+                keyData = tfKeywords.getText();
                 stage.hide();
-
             } catch (Exception e) {
                 new Alert(Alert.AlertType.ERROR, e.getMessage()).showAndWait();
             }
