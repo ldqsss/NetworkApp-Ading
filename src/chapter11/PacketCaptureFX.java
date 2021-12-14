@@ -1,8 +1,8 @@
 package chapter11;/*
  * @project: NetworkApp-Ading
- * @Created-Time: 2021-11-22 19:14
- * @Author: 刘鼎谦-Ading
- * @file_desc:
+ * @Created-Time: 2021/11/23 13:51
+ * @Author: Ading
+ * @file_des:
  */
 
 import javafx.application.Application;
@@ -22,8 +22,6 @@ import jpcap.JpcapCaptor;
 import jpcap.PacketReceiver;
 import jpcap.packet.Packet;
 
-import java.io.UnsupportedEncodingException;
-
 public class PacketCaptureFX extends Application {
     private TextArea taDisplay = new TextArea();
 
@@ -33,20 +31,13 @@ public class PacketCaptureFX extends Application {
     private Button btnSetting = new Button("设置");
     private Button btnExit = new Button("退出");
 
+    private String keyData;
     private ConfigDialog configDialog;
+
     private JpcapCaptor jpcapCaptor;
 
-
-    private void interrupt(String threadName){
-        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
-        int noThreads = currentGroup.activeCount();
-        Thread[] lstThreads = new Thread[noThreads];
-        currentGroup.enumerate(lstThreads);
-        for(int i = 0 ;i < noThreads; i++){
-            if(lstThreads[i].getName().equals(threadName)){
-                lstThreads[i].interrupt();
-            }
-        }
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
@@ -55,12 +46,13 @@ public class PacketCaptureFX extends Application {
 
         VBox display = new VBox();
         display.setSpacing(10);
-        display.setPadding(new Insets(10,20,10,20));
+        display.setPadding(new Insets(10, 20, 10, 20));
+        // 自动换行
         taDisplay.setWrapText(true);
+        // 只读
         taDisplay.setEditable(false);
-        taDisplay.setPrefHeight(250.9);
-        display.getChildren().addAll(new Label("抓包INFO: "), taDisplay);
-
+        taDisplay.setPrefHeight(250);
+        display.getChildren().addAll(new Label("抓包信息："), taDisplay);
         VBox.setVgrow(taDisplay, Priority.ALWAYS);
         mainPane.setCenter(display);
 
@@ -70,25 +62,29 @@ public class PacketCaptureFX extends Application {
             }
             configDialog.showAndWait();
             jpcapCaptor = configDialog.getJpcapCaptor();
+            keyData = configDialog.getKeyData();
+
         });
 
-        btnStart.setOnAction(e->{
-            if(jpcapCaptor==null){
-                if(configDialog==null){
+        btnStart.setOnAction(event -> {
+            if (jpcapCaptor == null) {
+                if (configDialog == null) {
                     configDialog = new ConfigDialog(primaryStage);
                 }
                 configDialog.showAndWait();
-                jpcapCaptor=configDialog.getJpcapCaptor();
+                jpcapCaptor = configDialog.getJpcapCaptor();
+                keyData = configDialog.getKeyData();
+
             }
             interrupt("captureThread");
-            new Thread(()->{
-               while (true){
-                   if(Thread.currentThread().isInterrupted()){
-                       break;
-                   }
-                   jpcapCaptor.processPacket(1, new PacketHandler());
-               }
-            }).start();
+            new Thread(() -> {
+                while (true) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        break;
+                    }
+                    jpcapCaptor.processPacket(1, new PacketHandler());
+                }
+            }, "captureThread").start();
         });
 
         btnStop.setOnAction(event -> {
@@ -119,37 +115,49 @@ public class PacketCaptureFX extends Application {
         primaryStage.show();
 
     }
-    private void exit() {
-        interrupt("captureThread");
-        System.exit(0);
-    }
+
     class PacketHandler implements PacketReceiver {
         @Override
         public void receivePacket(Packet packet) {
-            String keyData = null;
-            String packetData;
-            //分析包中是否包含需要显示的数据
-            try {
-                packetData = new String(packet.data,0,packet.data.length,"utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            if (keyData == null || keyData.trim().equalsIgnoreCase(""))
-                return;
-
-//将keyData按空格切分出包含多个关键词的字符串数组
-//提示，split方法也可以使用正则表达式，\s+表示匹配一个或多个空白
-                String[] keyList = keyData.split("s+");
-                try {
-                    String msg = new String(packet.data, 0, packet.data.length, "utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                Platform.runLater(() -> {
+            Platform.runLater(() -> {
                 taDisplay.appendText(packet.toString() + "\n");
             });
+            System.out.println(keyData);
+            if (keyData == null || keyData.trim().equalsIgnoreCase("")) {
+                return;
+            }
+            try {
+                String[] keyList = keyData.split(" ");
+                String msg = new String(packet.data, 0, packet.data.length, "utf-8");
+                for (String key : keyList) {
+                    if (msg.toUpperCase().contains(key.toUpperCase())) {
+                        Platform.runLater(() -> {
+                            taDisplay.appendText("数据部分：" + msg + "\n\n");
+                        });
+                        break;
+                    }
+                }
+
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
+    }
+
+    private void interrupt(String threadName) {
+        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
+        int noThreads = currentGroup.activeCount();
+        Thread[] lstThreads = new Thread[noThreads];
+        currentGroup.enumerate(lstThreads);
+        for (int i = 0; i < noThreads; i++) {
+            if (lstThreads[i].getName().equals(threadName)) {
+                lstThreads[i].interrupt();
+            }
+        }
+    }
+
+    private void exit() {
+        interrupt("captureThread");
+        System.exit(0);
     }
 }

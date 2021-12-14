@@ -5,11 +5,11 @@ import chapter13.rmi.ServerService;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-
-/**
- * description:
- * author: Leslie Leung
- * date: 2020/12/20
+/*
+ * @project: NetworkApp-Ading
+ * @Created-Time: 2021-12-05 16:55
+ * @Author: 刘鼎谦-Ading
+ * @file_desc:
  */
 public class ServerServiceServer {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
 package chapter11;/*
  * @project: NetworkApp-Ading
- * @Created-Time: 2021-11-22 19:12
- * @Author: 刘鼎谦-Ading
- * @file_desc:
+ * @Created-Time: 2021/11/23 13:48
+ * @Author: Ading
+ * @file_des:
  */
 
 import javafx.geometry.Insets;
@@ -21,15 +21,11 @@ public class ConfigDialog {
     //网卡列表
     private NetworkInterface[] devices = JpcapCaptor.getDeviceList();
     private Stage stage = new Stage();//对话框窗体
+    private TextField tfKeywords = new TextField();
+
+    private String keyData;
 
     //parentStage表示抓包主程序(PacketCaptureFX)的stage，传值可通过这种构造方法参数的方式
-    private String keyData= null;
-
-    public String getKeyData() {
-        return keyData;
-    }
-
-    private TextField tfKeywords = new TextField();
     public ConfigDialog(Stage parentStage) {
         //设置该对话框的父窗体为调用者的那个窗体
         stage.initOwner(parentStage);
@@ -67,6 +63,7 @@ public class ConfigDialog {
 
         vBox.getChildren().addAll(new Label("请选择网卡："), comboBox,
                 new Label("过滤"), tfFilter,
+                new Label("包中数据包含的关键字，匹配则显示数据内容（多个关键字为or关系，用空格隔开）"), tfKeywords,
                 new Label("设置抓包大小（建议介于68~1514之间）："), tfSize, checkBox,
                 new Separator(), hBoxBottom);
         Scene scene = new Scene(vBox);
@@ -85,7 +82,9 @@ public class ConfigDialog {
                         promisc, 20);
                 jpcapCaptor.setFilter(tfFilter.getText().trim(), true);
                 keyData = tfKeywords.getText();
+
                 stage.hide();
+
             } catch (Exception e) {
                 new Alert(Alert.AlertType.ERROR, e.getMessage()).showAndWait();
             }
@@ -101,9 +100,13 @@ public class ConfigDialog {
     public JpcapCaptor getJpcapCaptor() {
         return jpcapCaptor;
     }
-
     //主程序调用，阻塞式显示界面
     public void showAndWait() {
         stage.showAndWait();
     }
+
+    public String getKeyData() {
+        return keyData;
+    }
+
 }
