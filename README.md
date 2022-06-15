@@ -19,10 +19,10 @@
 
 ### 请我吃炒粉/Treat me to fried noodles
 
-<img src="README/images/image-20220610125521900.png" alt="image-20220610125521900" style="zoom:50%;" />
+<img src="images/image-20220610125521900.png" alt="image-20220610125521900" style="zoom:50%;" />
 
 ### 个人公众号
 
-![image-20220610125953114](README/images/image-20220610125953114.png)
+![image-20220610125953114](images/image-20220610125953114.png)
 
-<img src="README/images/image-20220610130048293.png" alt="image-20220610130048293" style="zoom: 67%;" />
+<img src="images/image-20220610130048293.png" alt="image-20220610130048293" style="zoom: 67%;" />
